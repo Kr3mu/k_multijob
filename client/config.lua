@@ -1,3 +1,5 @@
 Config = {}
 
-Config.Debug = true
+Config.Notification = function(text)
+  -- FUNCTION FOR NOTIFICATIONS
+end

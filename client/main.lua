@@ -5,5 +5,6 @@ Citizen.CreateThread(function()
     Citizen.Wait(1000)
   end
   local PlayerData = ESX.GetPlayerData()
-  Player:new(PlayerData.getIdentifier)
+  local CreatedPlayer = Player:new(PlayerData.getIdentifier)
+  TriggerServerEvent("k_multijob:registerPlayer", CreatedPlayer)
 end)

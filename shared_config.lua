@@ -1,0 +1,3 @@
+GlobalCFG = {}
+
+GlobalCFG.Debug = true
