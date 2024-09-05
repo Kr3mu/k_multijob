@@ -1,6 +1,10 @@
 function GetPlayerInfo()
+  local promise = promise:new()
+
   ESX.TriggerServerCallback("k_multijob:checkInfoForPlayer", function(obj)
-    return obj
+    promise:resolve(obj)
   end)
-  return nil
+
+  local player = Citizen.Await(promise)
+  return player or "Nie znaleziono gracza."
 end

@@ -1,33 +1,30 @@
-RegisteredPlayers = {}
-
-
-RegisterNetEvent("k_multijob:registerPlayer")
-AddEventHandler("k_multijob:registerPlayer", function(obj)
-  RegisteredPlayers[#RegisteredPlayers + 1] = obj
-  if GlobalCFG.Debug then
-    local identifier = obj.identifier
-    print("[LOG] Player " .. identifier .. " got registered!")
-  end
-end)
-
-
-
-RegisterNetEvent("k_multijob:removePlayer")
-AddEventHandler("k_multijob:removePlayer", function(index)
-  table.remove(RegisteredPlayers, index)
-end)
-
-
-
-RegisterNetEvent('esx:playerDropped', function(source, reason)
-  local xPlayer = ESX.GetPlayerFromId(playerId)
-  local playerIdentifier = xPlayer.getIdentifier()
-  local playerIndex = GetPlayerIndexByIdentifier(playerIdentifier)
-  if playerIndex then
-    TriggerEvent("k_multijob", playerIndex)
-    if GlobalCFG.Debug then
-      print("[LOG] Player " .. playerIdentifier .. " got removed!")
+if GlobalCFG.Debug then
+  Citizen.CreateThread(function()
+    local AllPlayers = ESX.GetExtendedPlayers()
+    for i, v in pairs(AllPlayers) do
+      local CreatedPlayer = Player:new(v.getIdentifier())
+      CreatedPlayer:getData()
+      CreatedPlayer:log("Player " .. CreatedPlayer.identifier .. " got registered!")
     end
+  end)
+else
+  RegisterNetEvent("esx:playerLoaded")
+  AddEventHandler("esx:playerLoaded", function(source, xPlayer, isNew)
+    local CreatedPlayer = Player:new(xPlayer.getIdentifier())
+    CreatedPlayer:log("Player " .. CreatedPlayer.identifier .. " got registered!")
+  end)
+end
+
+
+RegisterNetEvent("esx:playerDropped")
+AddEventHandler("esx:playerDropped", function(source, reason)
+  local xPlayer = ESX.GetPlayerFromId(source)
+  local identifier = xPlayer.getIdentifier()
+  local RemovedPlayer = GetPlayerByIdentifier(identifier)
+  local playerIndex = GetPlayerIndexByIdentifier(identifier)
+  if (playerIndex and RemovedPlayer) then
+    RemovedPlayer:log("Player " .. identifier .. " got removed!")
+    RemovedPlayer:remove()
   else
     error("[ERROR] Couldn't find player by given index.")
   end
