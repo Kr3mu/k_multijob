@@ -9,8 +9,8 @@ function Player:new(identifier)
   setmetatable(obj, Player)
 
   obj.identifier = identifier or "undefined"
-  obj.jobs = { "unemployed" }
-  obj.activeJob = "unemployed"
+  obj.jobs = { { name = Config.defaultJob.name, grade = Config.defaultJob.grade } }
+  obj.activeJob = Config.defaultJob.name
 
   Players[#Players + 1] = obj
 
@@ -60,5 +60,20 @@ function Player:getData()
   else
     self.jobs = selectedData.jobs
   end
+  self:log("Successfuly registered player " .. self.identifier .. " data.")
+end
+
+function Player:updateData()
+  local selectedData = MySQL.query.await("SELECT * FROM k_players WHERE identifier = ?", {
+    self.identifier
+  })
+  if #selectedData == 0 then
+    error("[ERROR] The player was never registered in database.")
+    return
+  end
+  MySQL.update.await("UPDATE k_players SET jobs = ? WHERE identifier = ?", {
+    self.jobs,
+    self.identifier
+  })
   self:log("Successfuly updated player " .. self.identifier .. " data.")
 end
