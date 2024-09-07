@@ -21,3 +21,16 @@ shared_scripts {
   "@es_extended/imports.lua",
   "shared/*.lua"
 }
+
+exports {
+  "GetPlayerJobs",
+  "GetPlayerActiveJob",
+  "GetJobsFromSource",
+  "GetJobsFromIdentifier",
+  "GetActiveJobFromSource",
+  "SetActiveJob",
+  "SetJob",
+  "DelJob",
+  "GetJobLabel",
+  "GetJobPlayerCount",
+}
