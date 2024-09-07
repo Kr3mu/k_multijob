@@ -18,7 +18,7 @@ function Player:new(identifier)
 end
 
 function Player:log(...)
-  if not (GlobalCFG.Debug) then return end
+  if not GlobalCFG.Debug then return end
   print(...)
 end
 
@@ -31,21 +31,55 @@ function Player:getJobs()
   return self.jobs
 end
 
-function Player:addJob(jobName)
-  -- ! Dodać sprawdzanie czy job istnieje.
+function Player:setJob(jobName, grade)
+  if not DoesJobExists(jobName) then
+    error("[ERROR] Tried to add player a job that doesn't exists!")
+  end
+  if not DoesGradeExisits(jobName, grade) then
+    error("[ERROR] Tried to add player a job that grade doesn't exists!")
+  end
   local tbl = self.jobs
-  table.insert(tbl, jobName)
+  local hasJob = PlayerHasJob(tbl, jobName)
+  if hasJob then
+    tbl[hasJob] = { name = jobName, grade = grade }
+  else
+    table.insert(tbl, { name = jobName, grade = grade })
+  end
+
+  self:updateData()
   self:log("Został dodany job dla: " .. self.identifier .. " o nazwie: " .. jobName)
 end
 
-function Player:setActiveJob(jobName)
-  -- ! Dodać sprawdzanie czy job istnieje i czy ma joba.
-  self.activeJob = jobName
-  self:log("Ustawiono joba jako aktywnego dla: " .. self.identifier .. " o nazwie: " .. jobName)
+function Player:delJob(jobName)
+  if not DoesJobExists(jobName) then
+    error("[ERROR] Tried to delete player a job that doesn't exists!")
+  end
+  local hasJob = PlayerHasJob(self.jobs, jobName)
+  if not hasJob then
+    error("[ERROR] Tried to delete player a job that he doesn't have!")
+  end
+  if jobName == Config.defaultJob.name then
+    error("[ERROR] Tried to delete player a job that is default!")
+  end
+  if self.activeJob == jobName then
+    self.activeJob = Config.defaultJob.name
+  end
+  self.jobs[hasJob] = nil
+
+  self:updateData()
+  self:log("Został usunięty job dla: " .. self.identifier .. " o nazwie: " .. jobName)
 end
 
-function Player:getActiveJob()
-  return self.activeJob
+function Player:setActiveJob(jobName)
+  if DoesJobExists(jobName) then
+    error("[ERROR] Tried to set player a active job that doesn't exists!")
+  end
+  local hasJob = PlayerHasJob(self.jobs, jobName)
+  if not hasJob then
+    error("[ERROR] Tried to set player a active job that he doesn't have!")
+  end
+  self.activeJob = jobName
+  self:log("Ustawiono joba jako aktywnego dla: " .. self.identifier .. " o nazwie: " .. jobName)
 end
 
 function Player:getData()
@@ -58,7 +92,8 @@ function Player:getData()
       json.encode(self.jobs)
     })
   else
-    self.jobs = selectedData.jobs
+    local data = selectedData[1]
+    self.jobs = json.decode(data.jobs)
   end
   self:log("Successfuly registered player " .. self.identifier .. " data.")
 end
@@ -72,7 +107,7 @@ function Player:updateData()
     return
   end
   MySQL.update.await("UPDATE k_players SET jobs = ? WHERE identifier = ?", {
-    self.jobs,
+    json.encode(self.jobs),
     self.identifier
   })
   self:log("Successfuly updated player " .. self.identifier .. " data.")

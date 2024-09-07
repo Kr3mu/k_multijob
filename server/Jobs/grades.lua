@@ -11,3 +11,11 @@ function GetAllGrades()
     end
   end
 end
+
+function DoesGradeExisits(jobName, grade)
+  if not Grades[jobName] then
+    error("[ERROR] Add grades in database!")
+  end
+  local grade = Grades[jobName][grade]
+  return grade
+end

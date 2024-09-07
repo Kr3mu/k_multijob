@@ -22,7 +22,7 @@ AddEventHandler("esx:playerDropped", function(source, reason)
   local identifier = xPlayer.getIdentifier()
   local RemovedPlayer = GetPlayerByIdentifier(identifier)
   local playerIndex = GetPlayerIndexByIdentifier(identifier)
-  if (playerIndex and RemovedPlayer) then
+  if playerIndex and RemovedPlayer then
     RemovedPlayer:log("Player " .. identifier .. " got removed!")
     RemovedPlayer:remove()
   else

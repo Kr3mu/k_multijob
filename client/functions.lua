@@ -8,3 +8,18 @@ function GetPlayerInfo()
   local player = Citizen.Await(promise)
   return player or "Nie znaleziono gracza."
 end
+
+function GetPlayerJobs()
+  local playerInfo = GetPlayerInfo()
+  if not playerInfo then return end
+  return playerInfo.jobs
+end
+
+function GetPlayerActiveJob()
+  local playerInfo = GetPlayerInfo()
+  if not playerInfo then return end
+  local data = {}
+  data.name = playerInfo.activeJob
+  data.grade = FindPlayerJobGrade(playerInfo.jobs, data.name)
+  return data
+end
