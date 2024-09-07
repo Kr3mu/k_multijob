@@ -47,7 +47,7 @@ function Player:setJob(jobName, grade)
   end
 
   self:updateData()
-  self:log("Został dodany job dla: " .. self.identifier .. " o nazwie: " .. jobName)
+  self:log("Job: " .. jobName .. " got added for: " .. self.identifier)
 end
 
 function Player:delJob(jobName)
@@ -67,7 +67,7 @@ function Player:delJob(jobName)
   self.jobs[hasJob] = nil
 
   self:updateData()
-  self:log("Został usunięty job dla: " .. self.identifier .. " o nazwie: " .. jobName)
+  self:log("Job: " .. jobName .. " got deleted for: " .. self.identifier)
 end
 
 function Player:setActiveJob(jobName)
@@ -79,7 +79,7 @@ function Player:setActiveJob(jobName)
     error("[ERROR] Tried to set player a active job that he doesn't have!")
   end
   self.activeJob = jobName
-  self:log("Ustawiono joba jako aktywnego dla: " .. self.identifier .. " o nazwie: " .. jobName)
+  self:log("Job: " .. jobName .. " got set as active for: " .. self.identifier)
 end
 
 function Player:getData()
