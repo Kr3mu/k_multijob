@@ -6,7 +6,7 @@ Citizen.CreateThread(function()
   GetAllGrades()
   local defaultJobExists = DoesJobExists(Config.defaultJob.name)
   if not defaultJobExists then
-    error("[ERROR] Domyślny job nie istnieje. Utwórz go w bazie danych!")
+    error("[ERROR] Default job doesn't exists. Create it in datbase!")
     return
   end
 end)
