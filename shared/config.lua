@@ -1,3 +1,3 @@
 GlobalCFG = {}
 
-GlobalCFG.Debug = true
+GlobalCFG.Debug = false
