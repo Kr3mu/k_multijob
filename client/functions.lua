@@ -6,7 +6,7 @@ function GetPlayerInfo()
   end)
 
   local player = Citizen.Await(promise)
-  return player or "Nie znaleziono gracza."
+  return player or "Coulnd't find a player."
 end
 
 function GetPlayerJobs()
